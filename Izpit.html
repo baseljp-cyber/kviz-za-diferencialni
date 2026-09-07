@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Učno orodje: Evropsko ustavno pravo</title>
+
+<style>
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary: #0f172a;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-color: #1e293b;
+    --text-muted: #64748b;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning-bg: #eff6ff;
+    --border: #cbd5e1;
+    --radius: 16px;
+    --shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #eef4ff 0%, var(--bg-color) 45%);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px;
+}
+
+header {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: clamp(1.55rem, 4vw, 2.35rem);
+    color: var(--secondary);
+    margin-bottom: 8px;
+    line-height: 1.15;
+}
+
+header p {
+    color: var(--text-muted);
+    font-size: clamp(0.95rem, 2.5vw, 1.08rem);
+    line-height: 1.5;
+}
+
+.nav-tabs {
+    width: 100%;
+    max-width: 820px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+    background: #e2e8f0;
+    padding: 6px;
+    border-radius: var(--radius);
+}
+
+.tab-btn {
+    padding: 12px 14px;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 12px;
+    transition: 0.2s ease;
+}
+
+.tab-btn.active {
+    background: var(--card-bg);
+    color: var(--primary);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.10);
+}
+
+.container {
+    width: 100%;
+    max-width: 820px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: var(--warning-bg);
+    color: var(--primary);
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.flashcard-wrapper {
+    perspective: 1200px;
+    min-height: 340px;
+    margin-bottom: 18px;
+    cursor: pointer;
+}
+
+.flashcard {
+    width: 100%;
+    min-height: 340px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius);
+}
+
+.flashcard.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 34px;
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    background: #f1f5f9;
+}
+
+.card-label {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary);
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.card-text {
+    font-size: clamp(1.05rem, 3.4vw, 1.32rem);
+    line-height: 1.55;
+    font-weight: 600;
+}
+
+.quiz-card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.quiz-question {
+    font-size: clamp(1.1rem, 3vw, 1.35rem);
+    font-weight: 800;
+    line-height: 1.45;
+    margin-bottom: 20px;
+    color: var(--secondary);
+}
+
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.option-btn {
+    width: 100%;
+    padding: 15px 18px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.45;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.option-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+}
+
+.option-btn.correct {
+    background: #dcfce7;
+    border-color: var(--success);
+    color: #166534;
+    font-weight: 800;
+}
+
+.option-btn.incorrect {
+    background: #fee2e2;
+    border-color: var(--danger);
+    color: #991b1b;
+    font-weight: 800;
+}
+
+.feedback {
+    display: none;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.feedback.good {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.feedback.bad {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.controls,
+.quiz-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 11px 18px;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.96rem;
+    font-weight: 800;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    min-height: 44px;
+}
+
+.btn:hover {
+    background: var(--primary-hover);
+}
+
+.btn-outline {
+    background: #fff;
+    color: var(--text-color);
+    border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+    background: #f1f5f9;
+}
+
+.progress-text {
+    color: var(--text-muted);
+    font-weight: 800;
+    font-size: 0.96rem;
+}
+
+.score-board {
+    text-align: center;
+    padding: 40px 24px;
+}
+
+.score-board h2 {
+    font-size: 1.9rem;
+    margin-bottom: 10px;
+}
+
+.score-board p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 22px;
+}
+
+.hint {
+    text-align: center;
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 14px;
+    }
+
+    .nav-tabs {
+        grid-template-columns: 1fr;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar .btn,
+    .toolbar .badge {
+        width: 100%;
+        text-align: center;
+    }
+
+    .flashcard-wrapper,
+    .flashcard {
+        min-height: 410px;
+    }
+
+    .card-face {
+        padding: 22px 18px;
+    }
+
+    .quiz-card {
+        padding: 22px 18px;
+    }
+
+    .controls,
+    .quiz-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn,
+    .progress-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    .option-btn {
+        font-size: 0.95rem;
+        padding: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Učno orodje: Evropsko ustavno pravo</h1>
+    <p>Učne kartice in kviz s štirimi možnimi odgovori za ponavljanje snovi.</p>
+</header>
+
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('flashcards')">Učne kartice</button>
+    <button class="tab-btn" onclick="switchTab('quiz')">Kviz znanja</button>
+</div>
+
+<div class="container">
+
+    <div id="flashcards" class="tab-content active">
+        <div class="toolbar">
+            <span class="badge" id="cards-count">Kartice</span>
+            <button class="btn btn-outline" onclick="shuffleCards()">Premešaj kartice</button>
+        </div>
+
+        <div class="flashcard-wrapper" onclick="flipCard()">
+            <div class="flashcard" id="card">
+                <div class="card-face card-front">
+                    <div class="card-label">Vprašanje</div>
+                    <div class="card-text" id="card-front-text">Nalaganje...</div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-label">Odgovor</div>
+                    <div class="card-text" id="card-back-text">Nalaganje...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-outline" onclick="prevCard()">Nazaj</button>
+            <span class="progress-text" id="card-progress">1 / 73</span>
+            <button class="btn" onclick="nextCard()">Naprej</button>
+        </div>
+
+        <p class="hint">Klikni kartico za prikaz odgovora.</p>
+    </div>
+
+    <div id="quiz" class="tab-content">
+        <div class="toolbar">
+            <span class="badge" id="quiz-count">Vprašanja</span>
+            <button class="btn btn-outline" onclick="shuffleQuiz()">Premešaj kviz</button>
+        </div>
+
+        <div class="quiz-card" id="quiz-box">
+            <div class="quiz-question" id="quiz-question">Nalaganje vprašanja...</div>
+
+            <div class="options-list" id="options-container"></div>
+
+            <div class="feedback" id="feedback-box"></div>
+
+            <div class="quiz-footer">
+                <span class="progress-text" id="quiz-progress">Vprašanje 1 od 73</span>
+                <button class="btn" id="next-quiz-btn" onclick="nextQuestion()" style="display:none;">Nadaljuj</button>
+            </div>
+        </div>
+
+        <div class="quiz-card score-board" id="score-box" style="display:none;">
+            <h2>Kviz zaključen!</h2>
+            <p id="score-text">Vaš rezultat: 0 od 0 pravilnih odgovorov.</p>
+            <button class="btn" onclick="restartQuiz()">Ponovi kviz</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const studyData = [
+    {
+        q: "Opredelite ustavno tvarino.",
+        a: "Ustavna tvarina zajema temeljna pravila o državni in družbeni ureditvi, organizaciji in delovanju oblasti ter človekovih pravicah in temeljnih svoboščinah."
+    },
+    {
+        q: "Pojasnite, ali uvrščamo slovensko ustavo med toge ali gibke ustave.",
+        a: "Slovenska ustava spada med toge ustave, ker za svoje spreminjanje predpisuje zahtevnejši ustavnorevizijski postopek."
+    },
+    {
+        q: "Pojasnite, kaj je ustavnorevizijski postopek, in navedite njegove faze.",
+        a: "Ustavnorevizijski postopek je postopek za spremembo ustave. Obsega predlog za začetek postopka, odločanje o predlogu, sprejetje ustavne spremembe in morebitno potrditev na referendumu."
+    },
+    {
+        q: "Kaj je ustavni zakon?",
+        a: "Ustavni zakon je akt za spremembo oziroma dopolnitev ustave, ki ima enako pravno veljavo kot ustava."
+    },
+    {
+        q: "Kaj tvori ustavnopravni temelj mednarodne organizacije?",
+        a: "Ustavnopravni temelj mednarodne organizacije tvori njen ustanovni instrument, običajno mednarodna pogodba, ki določa ureditev, pristojnosti, organe in delovanje organizacije."
+    },
+    {
+        q: "Katere naddržavne elemente lahko imajo mednarodne organizacije?",
+        a: "Med naddržavne elemente spadajo sprejemanje zavezujočih odločitev za države članice in posameznike, odločanje z večino, samostojno izvrševanje odločitev ter finančna avtonomija."
+    },
+    {
+        q: "Zakaj je bil pristop Slovenije k Svetu Evrope pomemben?",
+        a: "Ker je Slovenija s pristopom potrdila zavezanost demokraciji, vladavini prava in varstvu človekovih pravic ter se vključila v evropski sistem konvencijskega varstva."
+    },
+    {
+        q: "Kakšen je položaj EKČP v slovenskem pravnem redu?",
+        a: "EKČP ima v slovenskem pravnem redu zelo visok, v praksi ustavnopravni pomen, saj jo Ustavno sodišče uporablja kot del ustavnega prava."
+    },
+    {
+        q: "Pojasnite ustavno načelo najvišjega varstva pravic.",
+        a: "Načelo pomeni, da nobene človekove pravice ni dopustno omejevati z izgovorom, da je ustava ne priznava ali jo priznava v manjši meri, če drug pravni akt zagotavlja višjo raven varstva."
+    },
+    {
+        q: "Zakaj pravimo, da je 3.a člen Ustave RS evropski člen?",
+        a: "Ker je 3.a člen omogočil ustavnopravno podlago za prenos izvrševanja dela suverenih pravic na mednarodne organizacije, predvsem na Evropsko unijo."
+    },
+    {
+        q: "Kaj ureja 3.a člen Ustave RS?",
+        a: "Ureja pogoje za prenos izvrševanja dela suverenih pravic na mednarodne organizacije in uporabo pravnih aktov teh organizacij v Sloveniji."
+    },
+    {
+        q: "Kako pravo EU učinkuje v slovenskem pravnem redu?",
+        a: "Pravo EU se v Sloveniji uporablja skladno s pravno ureditvijo EU, lahko ima neposredno uporabo, neposredni učinek in prednost pred nacionalnim pravom."
+    },
+    {
+        q: "Kaj pojasnjuje teorija stopnjevitosti prava?",
+        a: "Pojasnjuje hierarhijo pravnih aktov, po kateri morajo biti nižji pravni akti skladni z višjimi."
+    },
+    {
+        q: "Kakšno mesto imajo mednarodne pogodbe v slovenski hierarhiji pravnih aktov?",
+        a: "Mednarodne pogodbe, ki jih ratificira državni zbor in se uporabljajo neposredno, so pod ustavo in nad zakoni."
+    },
+    {
+        q: "Pojasnite okoliščine nastanka Sveta Evrope.",
+        a: "Svet Evrope je nastal po drugi svetovni vojni kot odgovor na potrebo po miru, demokraciji, vladavini prava in varstvu človekovih pravic v Evropi."
+    },
+    {
+        q: "Za katere vrednote se zavzema Svet Evrope?",
+        a: "Svet Evrope se zavzema za demokracijo, vladavino prava ter varstvo človekovih pravic in temeljnih svoboščin."
+    },
+    {
+        q: "Kaj tvori ustavnopravni temelj Sveta Evrope?",
+        a: "Ustavnopravni temelj Sveta Evrope tvorijo Statut Sveta Evrope, statutarna besedila in pomembno tudi EKČP."
+    },
+    {
+        q: "Kaj je statutarna resolucija?",
+        a: "Statutarna resolucija je resolucija, ki ureja statutarno materijo in dopolnjuje Statut Sveta Evrope, ne da bi spreminjala njegovo besedilo."
+    },
+    {
+        q: "Zakaj je Svet Evrope zaprta organizacija?",
+        a: "Ker članstvo ni samodejno, temveč je mogoče samo na podlagi povabila Odbora ministrov po posvetovanju s Parlamentarno skupščino."
+    },
+    {
+        q: "Katera merila mora izpolniti država za članstvo v Svetu Evrope?",
+        a: "Izpolnjevati mora geografsko merilo evropske države, vrednostno zavezanost demokraciji, pravni državi in človekovim pravicam ter politično zavezo k reformam in ratifikaciji EKČP."
+    },
+    {
+        q: "Kako državi lahko preneha članstvo v Svetu Evrope?",
+        a: "Članstvo lahko preneha s prostovoljno odpovedjo ali z obvezno odpovedjo zaradi hudih kršitev temeljnih vrednot Sveta Evrope."
+    },
+    {
+        q: "Kako se poglablja delovanje Sveta Evrope?",
+        a: "Sprejemajo se konvencije, okvirne konvencije, sporazumi in drugi instrumenti, ki razvijajo skupne standarde na področjih demokracije, vladavine prava in človekovih pravic."
+    },
+    {
+        q: "Kaj je statutarni cilj Sveta Evrope?",
+        a: "Doseči večjo enotnost med državami članicami, varovati skupne ideale in načela ter spodbujati gospodarski in družbeni napredek."
+    },
+    {
+        q: "Katera sta statutarna organa Sveta Evrope?",
+        a: "Statutarna organa Sveta Evrope sta Odbor ministrov in Parlamentarna skupščina."
+    },
+    {
+        q: "Kakšna je vloga Odbora ministrov Sveta Evrope?",
+        a: "Odbor ministrov je medvladni organ odločanja, ki sprejema priporočila, konvencije, proračun, odloča o članstvu in nadzira izvrševanje sodb ESČP."
+    },
+    {
+        q: "Kakšna je vloga Parlamentarne skupščine Sveta Evrope?",
+        a: "Parlamentarna skupščina je posvetovalni organ, ki razpravlja o vprašanjih Sveta Evrope in voli pomembne funkcionarje, med drugim sodnike ESČP."
+    },
+    {
+        q: "Kako lahko pride do spremembe EKČP?",
+        a: "Spremembe EKČP nastanejo s protokoli, ki lahko dodajajo nove pravice ali spreminjajo konvencijski nadzorni mehanizem."
+    },
+    {
+        q: "Pojasnite sestavo ESČP.",
+        a: "ESČP ima toliko sodnikov, kolikor je držav pogodbenic EKČP. Sodniki delujejo neodvisno in v osebnem svojstvu."
+    },
+    {
+        q: "Razložite postopek izvolitve sodnika ESČP.",
+        a: "Država predlaga tri kandidate, Parlamentarna skupščina preveri merila in z večino glasov izvoli sodnika za devetletni mandat brez ponovne izvolitve."
+    },
+    {
+        q: "Navedite pristojnosti ESČP.",
+        a: "ESČP odloča o individualnih in meddržavnih pritožbah ter daje svetovalna mnenja o razlagi EKČP in njenih protokolov."
+    },
+    {
+        q: "Kaj pomeni subsidiarna vloga konvencijskega mehanizma?",
+        a: "Pomeni, da imajo glavno odgovornost za varstvo konvencijskih pravic države pogodbenice, ESČP pa posreduje šele po izčrpanju domačih pravnih sredstev."
+    },
+    {
+        q: "Kaj pomeni doktrina polja proste presoje?",
+        a: "Pomeni, da imajo države pogodbenice določeno svobodo pri uporabi EKČP, ESČP pa nadzira, ali ostanejo v dopustnih mejah."
+    },
+    {
+        q: "Kdaj lahko posameznik vloži pritožbo na ESČP?",
+        a: "Ko zatrjuje kršitev konvencijske pravice, ko so izčrpana domača pravna sredstva in ko je pritožba vložena v predpisanem roku po dokončni domači odločitvi."
+    },
+    {
+        q: "Opredelite postopek s pilotno sodbo.",
+        a: "To je postopek, ki ga ESČP uporabi ob strukturnem ali sistemskem problemu v državi, ki povzroča številne podobne pritožbe."
+    },
+    {
+        q: "Kateri organ nadzira izvršitev sodb ESČP?",
+        a: "Izvršitev sodb ESČP nadzira Odbor ministrov Sveta Evrope."
+    },
+    {
+        q: "Zakaj je nastala Evropska gospodarska skupnost?",
+        a: "Nastala je zaradi želje po miru, gospodarskem sodelovanju, odpravi nasprotij med državami in postopnem povezovanju Evrope po drugi svetovni vojni."
+    },
+    {
+        q: "Na katerih pogodbah temelji EU?",
+        a: "EU temelji predvsem na Pogodbi o Evropski uniji, Pogodbi o delovanju Evropske unije in Listini EU o temeljnih pravicah."
+    },
+    {
+        q: "Katera merila mora izpolniti država, ki želi pristopiti k EU?",
+        a: "Biti mora evropska država, spoštovati vrednote EU, izpolnjevati köbenhavnska merila in biti sposobna prevzeti obveznosti članstva."
+    },
+    {
+        q: "Kaj pomeni poglobitev ustavnopravnega temelja EU?",
+        a: "Pomeni kakovostno nadgradnjo EU z revizijami ustanovnih pogodb, širjenjem pristojnosti in razvojem institucionalne ureditve."
+    },
+    {
+        q: "Kaj je načelo institucionalnega ravnovesja?",
+        a: "Načelo pomeni, da vsaka institucija EU deluje v mejah svojih pristojnosti in da se med institucijami ohranja uravnoteženje moči."
+    },
+    {
+        q: "Pojasnite razliko med Svetom Evrope, Evropskim svetom in Svetom EU.",
+        a: "Svet Evrope je samostojna mednarodna organizacija. Evropski svet je institucija EU voditeljev držav ali vlad. Svet EU je institucija EU, v kateri odločajo ministri držav članic."
+    },
+    {
+        q: "Navedite institucije EU.",
+        a: "Institucije EU so Evropski parlament, Evropski svet, Svet EU, Evropska komisija, Sodišče EU, Evropska centralna banka in Računsko sodišče."
+    },
+    {
+        q: "Kaj je Odbor iz 255. člena PDEU?",
+        a: "To je odbor, ki daje mnenje o ustreznosti kandidatov za sodnike in generalne pravobranilce Sodišča EU."
+    },
+    {
+        q: "Katere institucije sodelujejo v zakonodajnem postopku EU?",
+        a: "Praviloma Evropska komisija predlaga zakonodajni akt, Evropski parlament in Svet EU pa ga kot sozakonodajalca sprejmeta."
+    },
+    {
+        q: "Zakaj v EU obstajajo agencije?",
+        a: "Agencije zagotavljajo strokovno, tehnično, znanstveno, raziskovalno ali organizacijsko podporo delovanju EU na posameznih področjih."
+    },
+    {
+        q: "Kaj je primarno pravo EU?",
+        a: "Primarno pravo EU je temeljni pravni vir EU, kamor spadajo ustanovni pogodbi, njune revizije, Listina EU, pristopne pogodbe, splošna načela in sodna praksa Sodišča EU."
+    },
+    {
+        q: "Kako se lahko spreminjata PEU in PDEU?",
+        a: "Spreminjata se lahko po rednem revizijskem postopku ali po poenostavljenih revizijskih postopkih, vključno s premostitvenimi klavzulami."
+    },
+    {
+        q: "Kaj pomeni načelo prenosa pristojnosti?",
+        a: "Pomeni, da EU deluje samo v mejah pristojnosti, ki so jih nanjo za doseganje skupnih ciljev prenesle države članice."
+    },
+    {
+        q: "Kakšen je notranjepravni temelj prenosa pristojnosti v Sloveniji?",
+        a: "Notranjepravni temelj prenosa pristojnosti je 3.a člen Ustave Republike Slovenije."
+    },
+    {
+        q: "Kakšna je razlika med subsidiarnostjo in sorazmernostjo?",
+        a: "Subsidiarnost določa, kdaj EU sme ukrepati namesto držav članic, sorazmernost pa zahteva, da ukrep EU ne presega tistega, kar je potrebno za dosego cilja."
+    },
+    {
+        q: "Zakaj je pomembna avtonomnost pravnega reda EU?",
+        a: "Ker pomeni, da je pravo EU samostojen pravni red, ki se razvija neodvisno od nacionalnih pravnih redov in zagotavlja enotno delovanje EU."
+    },
+    {
+        q: "Kako je Sodišče EU utemeljilo načelo primarnosti prava EU?",
+        a: "Utemeljilo ga je s posebno naravo prava EU, prenosom suverenih pravic in potrebo po enotni ter učinkoviti uporabi prava EU."
+    },
+    {
+        q: "Kakšna je razlika med neposredno uporabo in neposrednim učinkom prava EU?",
+        a: "Neposredna uporaba pomeni, da akt EU postane del nacionalnega prava brez prenosa. Neposredni učinek pomeni, da se posameznik lahko sklicuje na določbo pred sodiščem."
+    },
+    {
+        q: "Kaj je sekundarno pravo EU?",
+        a: "Sekundarno pravo EU so pravni akti, ki jih sprejemajo institucije in druga telesa EU na podlagi primarnega prava."
+    },
+    {
+        q: "Katere so vrste pravnih aktov EU po 288. členu PDEU?",
+        a: "Vrste aktov so uredbe, direktive, sklepi, priporočila in mnenja."
+    },
+    {
+        q: "Kakšna je razlika med uredbo in direktivo?",
+        a: "Uredba je splošno veljavna, v celoti zavezujoča in neposredno uporabna. Direktiva zavezuje glede cilja, obliko in metode prenosa pa prepušča državam članicam."
+    },
+    {
+        q: "Ali ima uredba neposredni učinek?",
+        a: "Da, če je njena določba dovolj jasna, natančna, brezpogojna in ne potrebuje dodatnih izvedbenih ukrepov."
+    },
+    {
+        q: "Ali ima direktiva neposredni učinek?",
+        a: "Lahko ima vertikalni neposredni učinek, če je določba jasna, natančna in brezpogojna ter če država direktive ni pravočasno ali pravilno prenesla."
+    },
+    {
+        q: "Ali ima direktiva horizontalni neposredni učinek?",
+        a: "Ne. Direktiva se praviloma ne more neposredno uveljavljati v sporih med posamezniki."
+    },
+    {
+        q: "Kaj pomeni odškodninska odgovornost države zaradi kršitve prava EU?",
+        a: "Posameznik lahko od države zahteva odškodnino, če mu je zaradi kršitve prava EU, na primer neprenosa direktive, nastala škoda."
+    },
+    {
+        q: "Kaj so mehkopravni instrumenti?",
+        a: "To so nezavezujoči akti, kot so priporočila in mnenja, ki nimajo zavezujoče moči, lahko pa imajo pravne in praktične učinke."
+    },
+    {
+        q: "Kako je urejena hierarhija sekundarnih pravnih aktov EU?",
+        a: "Uredbe, direktive in sklepi se lahko sprejemajo kot zakonodajni, delegirani ali izvedbeni akti."
+    },
+    {
+        q: "Katere so značilnosti rednega zakonodajnega postopka EU?",
+        a: "Zakonodajni akt praviloma predlaga Evropska komisija, sprejmeta pa ga Evropski parlament in Svet EU kot sozakonodajalca."
+    },
+    {
+        q: "Kakšen je pomen postopka predhodnega odločanja?",
+        a: "Omogoča sodelovanje med nacionalnimi sodišči in Sodiščem EU, zagotavlja enotno razlago in uporabo prava EU ter posredno varuje pravice posameznikov."
+    },
+    {
+        q: "Kakšna je razlika med razlago in uporabo prava EU?",
+        a: "Sodišče EU razlaga pravo EU in presoja veljavnost aktov EU, nacionalno sodišče pa pravo EU uporabi v konkretnem sporu."
+    },
+    {
+        q: "Kakšna je razlika med fakultativno in obligatorno predložitvijo vprašanja?",
+        a: "Fakultativna pomeni, da nacionalno sodišče vprašanje lahko predloži, obligatorna pa, da ga mora predložiti sodišče, zoper odločitev katerega ni pravnega sredstva."
+    },
+    {
+        q: "Katere izjeme razbremenjujejo zadnjestopenjska sodišča predložitve vprašanja?",
+        a: "Vprašanja ni treba predložiti, če ni relevantno, če je bilo že rešeno v sodni praksi Sodišča EU ali če je pravilna uporaba prava EU očitna."
+    },
+    {
+        q: "Kaj je doktrina acte clair?",
+        a: "Doktrina acte clair pomeni, da zadnjestopenjskemu sodišču ni treba postaviti vprašanja, če je pravilna uporaba prava EU tako očitna, da ne dopušča razumnega dvoma."
+    },
+    {
+        q: "Kakšna je razlika med razlago prava EU in veljavnostjo sekundarnega prava EU?",
+        a: "Pri razlagi Sodišče EU pojasni pomen prava EU. Pri veljavnosti presoja, ali je sekundarni akt EU skladen s primarnim pravom EU."
+    },
+    {
+        q: "Kakšna je razlika med predhodnim odločanjem in tožbo zaradi neizpolnitve obveznosti?",
+        a: "Predhodno odločanje je sodelovalni vmesni postopek med nacionalnim sodiščem in Sodiščem EU, tožba zaradi neizpolnitve obveznosti pa je nadzorni postopek proti državi članici."
+    },
+    {
+        q: "Kateri so temeljni elementi postopka zaradi neizpolnitve obveznosti?",
+        a: "Postopek ima predsodno fazo z opominom in obrazloženim mnenjem ter sodno fazo pred Sodiščem EU."
+    },
+    {
+        q: "Kdaj sme Sodišče EU državi članici izreči finančne kazni?",
+        a: "Če država ne izvrši sodbe Sodišča EU ali v določenih primerih že ob neizpolnitvi obveznosti obvestila o ukrepih za prenos direktive."
+    },
+    {
+        q: "Kakšna je razlika med predhodnim odločanjem in ničnostno tožbo?",
+        a: "Predhodno odločanje je posredni mehanizem prek nacionalnega sodišča, ničnostna tožba pa neposreden postopek za nadzor zakonitosti aktov EU."
+    },
+    {
+        q: "Kako Sodišče EU uporablja Listino EU o temeljnih pravicah?",
+        a: "Uporablja jo kot merilo presoje veljavnosti aktov EU, kot orodje za razlago prava EU in kot vir za razlago posameznih temeljnih pravic."
+    },
+    {
+        q: "Katere so pravne posledice kršitve predložitvene dolžnosti?",
+        a: "Lahko pride do postopka zaradi neizpolnitve obveznosti, odškodninske odgovornosti države, kršitve ustavnih pravic in tudi kršitve pravice do poštenega sojenja po EKČP."
+    },
+    {
+        q: "Kaj pomeni doktrina enakovrednega varstva človekovih pravic?",
+        a: "Pomeni, da ESČP pri presoji ravnanj držav v okviru prava EU upošteva, ali sistem EU zagotavlja varstvo človekovih pravic, ki je primerljivo varstvu po EKČP."
+    }
+];
+
+let cardsData = [...studyData];
+let quizData = [...studyData];
+
+let currentCardIndex = 0;
+let currentQuizIndex = 0;
+let isFlipped = false;
+
+let score = 0;
+let answered = false;
+let currentOptions = [];
+
+function switchTab(tabName) {
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+
+    if (tabName === "flashcards") {
+        document.querySelectorAll(".tab-btn")[0].classList.add("active");
+        document.getElementById("flashcards").classList.add("active");
+    } else {
+        document.querySelectorAll(".tab-btn")[1].classList.add("active");
+        document.getElementById("quiz").classList.add("active");
+    }
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
+    }
+}
+
+function updateCard() {
+    const cardElement = document.getElementById("card");
+    if (!cardElement) return;
+    cardElement.classList.remove("flipped");
+    isFlipped = false;
+
+    if (!cardsData || cardsData.length === 0) {
+        cardsData = [...studyData];
+    }
+    if (currentCardIndex >= cardsData.length) {
+        currentCardIndex = 0;
+    }
+
+    document.getElementById("card-front-text").innerText = cardsData[currentCardIndex].q;
+    document.getElementById("card-back-text").innerText = cardsData[currentCardIndex].a;
+    document.getElementById("card-progress").innerText = `${currentCardIndex + 1} / ${cardsData.length}`;
+    document.getElementById("cards-count").innerText = `${cardsData.length} kartic`;
+}
+
+function flipCard() {
+    isFlipped = !isFlipped;
+    const cardElement = document.getElementById("card");
+    if (cardElement) {
+        cardElement.classList.toggle("flipped", isFlipped);
+    }
+}
+
+function nextCard() {
+    currentCardIndex = (currentCardIndex + 1) % cardsData.length;
+    updateCard();
+}
+
+function prevCard() {
+    currentCardIndex = (currentCardIndex - 1 + cardsData.length) % cardsData.length;
+    updateCard();
+}
+
+function shuffleCards() {
+    shuffleArray(cardsData);
+    currentCardIndex = 0;
+    updateCard();
+}
+
+function generateOptions(correctAnswer) {
+    const wrongAnswers = studyData
+        .map(item => item.a)
+        .filter(answer => answer !== correctAnswer);
+
+    shuffleArray(wrongAnswers);
+
+    const selectedWrongAnswers = wrongAnswers.slice(0, 3);
+
+    currentOptions = [
+        {
+            text: correctAnswer,
+            correct: true
+        },
+        ...selectedWrongAnswers.map(answer => ({
+            text: answer,
+            correct: false
+        }))
+    ];
+
+    shuffleArray(currentOptions);
+}
+
+function loadQuestion() {
+    answered = false;
+
+    if (!quizData || quizData.length === 0) {
+        quizData = [...studyData];
+    }
+
+    if (currentQuizIndex >= quizData.length) {
+        currentQuizIndex = 0;
+    }
+
+    const current = quizData[currentQuizIndex];
+    if (!current) return;
+
+    generateOptions(current.a);
+
+    document.getElementById("quiz-question").innerText = current.q;
+    document.getElementById("quiz-progress").innerText = `Vprašanje ${currentQuizIndex + 1} od ${quizData.length}`;
+    document.getElementById("quiz-count").innerText = `${quizData.length} vprašanj`;
+    
+    const nextBtn = document.getElementById("next-quiz-btn");
+    if (nextBtn) nextBtn.style.display = "none";
+
+    const feedbackBox = document.getElementById("feedback-box");
+    if (feedbackBox) {
+        feedbackBox.style.display = "none";
+        feedbackBox.className = "feedback";
+        feedbackBox.innerText = "";
+    }
+
+    const optionsContainer = document.getElementById("options-container");
+    if (optionsContainer) {
+        optionsContainer.innerHTML = "";
+
+        currentOptions.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.className = "option-btn";
+            button.innerText = option.text;
+            button.onclick = () => selectOption(index, button);
+            optionsContainer.appendChild(button);
+        });
+    }
+}
+
+function selectOption(selectedIndex, selectedButton) {
+    if (answered) return;
+    answered = true;
+
+    const allButtons = document.querySelectorAll(".option-btn");
+    const feedbackBox = document.getElementById("feedback-box");
+
+    currentOptions.forEach((option, index) => {
+        if (option.correct) {
+            allButtons[index].classList.add("correct");
+        }
+        allButtons[index].disabled = true;
+    });
+
+    if (currentOptions[selectedIndex].correct) {
+        score++;
+        feedbackBox.className = "feedback good";
+        feedbackBox.innerText = "Pravilno!";
+    } else {
+        selectedButton.classList.add("incorrect");
+        const correctAnswer = currentOptions.find(option => option.correct).text;
+        feedbackBox.className = "feedback bad";
+        feedbackBox.innerText = "Napačno. Pravilen odgovor je: " + correctAnswer;
+    }
+
+    feedbackBox.style.display = "block";
+    document.getElementById("next-quiz-btn").style.display = "inline-block";
+}
+
+function nextQuestion() {
+    currentQuizIndex++;
+
+    if (currentQuizIndex < quizData.length) {
+        loadQuestion();
+    } else {
+        showScore();
+    }
+}
+
+function showScore() {
+    document.getElementById("quiz-box").style.display = "none";
+    document.getElementById("score-box").style.display = "block";
+
+    const percent = Math.round((score / quizData.length) * 100);
+    document.getElementById("score-text").innerText =
+        `Vaš rezultat: ${score} od ${quizData.length} pravilnih odgovorov (${percent} %).`;
+}
+
+function restartQuiz() {
+    currentQuizIndex = 0;
+    score = 0;
+    answered = false;
+
+    document.getElementById("score-box").style.display = "none";
+    document.getElementById("quiz-box").style.display = "block";
+
+    shuffleArray(quizData);
+    loadQuestion();
+}
+
+function shuffleQuiz() {
+    shuffleArray(quizData);
+    currentQuizIndex = 0;
+    score = 0;
+    answered = false;
+
+    document.getElementById("score-box").style.display = "none";
+    document.getElementById("quiz-box").style.display = "block";
+
+    loadQuestion();
+}
+
+// Varnostna čakalna vrsta, ki zagotavlja, da mobilni brskalnik vse pravilno naloži
+document.addEventListener("DOMContentLoaded", function() {
+    shuffleArray(quizData);
+    shuffleArray(cardsData);
+    updateCard();
+    loadQuestion();
+});
+
+document.addEventListener("keydown", function(event) {
+    if (document.getElementById("flashcards").classList.contains("active")) {
+        if (event.key === "ArrowRight") nextCard();
+        if (event.key === "ArrowLeft") prevCard();
+        if (event.key === " " || event.key === "Enter") {
+            event.preventDefault();
+            flipCard();
+        }
+    }
+
+    if (document.getElementById("quiz").classList.contains("active")) {
+        if (event.key === "ArrowRight" && answered) nextQuestion();
+    }
+});
+</script>
+
+</body>
+</html>
